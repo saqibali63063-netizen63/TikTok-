@@ -1,19 +1,16 @@
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
-const path = require("path");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-// Website files serve karo
 app.use(express.static(__dirname));
 
-// Home page
+// Home route
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(__dirname + "/index.html");
 });
 
 // TikTok Downloader API
@@ -28,27 +25,63 @@ app.get("/api/tiktok", async (req, res) => {
       });
     }
 
-    const response = await axios.get(
-      "https://tikwm.com/api/",
-      {
-        params: { url: url },
-        timeout: 20000
-      }
-    );
-
-    const data = response.data;
-
-    if (!data || !data.data || !data.data.play) {
+    if (!url.includes("tiktok.com")) {
       return res.status(400).json({
         status: "error",
-        error: "Video could not be found"
+        error: "Please enter a valid TikTok URL"
+      });
+    }
+
+    console.log("TikTok URL:", url);
+
+    const apiUrl =
+      "https://www.tikwm.com/api/?url=" +
+      encodeURIComponent(url);
+
+    const response = await axios.get(apiUrl, {
+      timeout: 20000,
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36"
+      }
+    });
+
+    console.log("TikWM response:", response.data);
+
+    if (
+      !response.data ||
+      response.data.code !== 0 ||
+      !response.data.data
+    ) {
+      return res.status(400).json({
+        status: "error",
+        error:
+          response.data?.msg ||
+          "TikTok video could not be found"
+      });
+    }
+
+    const data = response.data.data;
+
+    const video =
+      data.play ||
+      data.hdplay ||
+      data.wmplay ||
+      data.download;
+
+    if (!video) {
+      return res.status(400).json({
+        status: "error",
+        error: "No video download link was returned"
       });
     }
 
     res.json({
       status: "success",
-      title: data.data.title || "TikTok Video",
-      video: data.data.play
+      title: data.title || "TikTok Video",
+      video: video,
+      cover: data.cover || "",
+      author: data.author?.nickname || ""
     });
 
   } catch (error) {
@@ -73,20 +106,20 @@ app.get("/api/thumbnail", (req, res) => {
       });
     }
 
-    let videoId = null;
+    let videoId = "";
 
-    // youtube.com/watch?v=
+    // Normal YouTube URL
     if (url.includes("v=")) {
       videoId = url.split("v=")[1].split("&")[0];
     }
 
-    // youtu.be/
-    if (url.includes("youtu.be/")) {
+    // youtu.be URL
+    else if (url.includes("youtu.be/")) {
       videoId = url.split("youtu.be/")[1].split("?")[0];
     }
 
-    // youtube.com/shorts/
-    if (url.includes("/shorts/")) {
+    // YouTube Shorts
+    else if (url.includes("/shorts/")) {
       videoId = url.split("/shorts/")[1].split("?")[0];
     }
 
@@ -102,7 +135,8 @@ app.get("/api/thumbnail", (req, res) => {
 
     res.json({
       status: "success",
-      thumbnail: thumbnail
+      thumbnail: thumbnail,
+      videoId: videoId
     });
 
   } catch (error) {
@@ -115,9 +149,17 @@ app.get("/api/thumbnail", (req, res) => {
   }
 });
 
+// Health check
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "success",
+    message: "VideoFlow API is running ✅"
+  });
+});
+
 // Railway PORT
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`VideoFlow server running on port ${PORT}`);
 });
