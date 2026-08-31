@@ -6,136 +6,99 @@ const path = require("path");
 const app = express();
 
 app.use(cors());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json());
 
+// Website files serve karo
+app.use(express.static(__dirname));
+
+// Home page
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// TikTok info
+// TikTok Downloader API
 app.get("/api/tiktok", async (req, res) => {
   try {
     const url = req.query.url;
 
     if (!url) {
       return res.status(400).json({
-        error: "URL is required"
+        status: "error",
+        error: "TikTok URL is required"
       });
     }
 
     const response = await axios.get(
-      `https://tikwm.com/api/?url=${encodeURIComponent(url)}`,
+      "https://tikwm.com/api/",
       {
+        params: { url: url },
         timeout: 20000
       }
     );
 
-    const data = response.data?.data;
+    const data = response.data;
 
-    if (!data?.play) {
-      return res.status(502).json({
+    if (!data || !data.data || !data.data.play) {
+      return res.status(400).json({
+        status: "error",
         error: "Video could not be found"
       });
     }
 
     res.json({
       status: "success",
-      title: data.title || "TikTok video",
-      video: data.play
+      title: data.data.title || "TikTok Video",
+      video: data.data.play
     });
 
   } catch (error) {
     console.error("TikTok error:", error.message);
 
     res.status(500).json({
-      error: "Failed to fetch video"
+      status: "error",
+      error: "Failed to fetch TikTok video"
     });
   }
 });
 
-// TikTok actual download
-app.get("/api/tiktok/download", async (req, res) => {
-  try {
-    const video = req.query.video;
-
-    if (!video) {
-      return res.status(400).json({
-        error: "Video URL is required"
-      });
-    }
-
-    const response = await axios.get(video, {
-      responseType: "stream",
-      timeout: 30000,
-      headers: {
-        "User-Agent": "Mozilla/5.0",
-        "Referer": "https://www.tiktok.com/"
-      }
-    });
-
-    res.setHeader(
-      "Content-Type",
-      response.headers["content-type"] || "video/mp4"
-    );
-
-    res.setHeader(
-      "Content-Disposition",
-      'attachment; filename="tiktok-video.mp4"'
-    );
-
-    if (response.headers["content-length"]) {
-      res.setHeader(
-        "Content-Length",
-        response.headers["content-length"]
-      );
-    }
-
-    response.data.pipe(res);
-
-  } catch (error) {
-    console.error("Download error:", error.message);
-
-    res.status(502).json({
-      error: "Video download failed"
-    });
-  }
-});
-
-// YouTube Thumbnail
+// YouTube Thumbnail API
 app.get("/api/thumbnail", (req, res) => {
   try {
     const url = req.query.url;
 
     if (!url) {
       return res.status(400).json({
-        error: "URL is required"
+        status: "error",
+        error: "YouTube URL is required"
       });
     }
 
     let videoId = null;
 
-    try {
-      const parsed = new URL(url);
+    // youtube.com/watch?v=
+    if (url.includes("v=")) {
+      videoId = url.split("v=")[1].split("&")[0];
+    }
 
-      if (parsed.hostname.includes("youtu.be")) {
-        videoId = parsed.pathname
-          .split("/")
-          .filter(Boolean)[0];
+    // youtu.be/
+    if (url.includes("youtu.be/")) {
+      videoId = url.split("youtu.be/")[1].split("?")[0];
+    }
 
-      } else if (parsed.hostname.includes("youtube.com")) {
-        videoId = parsed.searchParams.get("v");
-      }
-
-    } catch (_) {}
+    // youtube.com/shorts/
+    if (url.includes("/shorts/")) {
+      videoId = url.split("/shorts/")[1].split("?")[0];
+    }
 
     if (!videoId) {
       return res.status(400).json({
+        status: "error",
         error: "Invalid YouTube URL"
       });
     }
 
     const thumbnail =
-      `https://img.youtube.com/vi/${encodeURIComponent(videoId)}/maxresdefault.jpg`;
+      `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 
     res.json({
       status: "success",
@@ -143,14 +106,18 @@ app.get("/api/thumbnail", (req, res) => {
     });
 
   } catch (error) {
+    console.error("Thumbnail error:", error.message);
+
     res.status(500).json({
+      status: "error",
       error: "Error generating thumbnail"
     });
   }
 });
 
+// Railway PORT
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
