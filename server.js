@@ -8,20 +8,18 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-
-// ================================
-// HOME
-// ================================
-
+/* =========================
+   HOME
+========================= */
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
+/* =========================
+   TIKTOK DOWNLOADER
+========================= */
 
-// ================================
-// TIKTOK VIDEO API
-// ================================
-
+// Main endpoint
 app.get("/api/tiktok", async (req, res) => {
   try {
     const url = req.query.url;
@@ -33,66 +31,31 @@ app.get("/api/tiktok", async (req, res) => {
       });
     }
 
-    if (!url.includes("tiktok.com")) {
-      return res.status(400).json({
-        status: "error",
-        error: "Please enter a valid TikTok URL"
-      });
-    }
-
-    console.log("TikTok URL:", url);
-
-    const apiUrl =
-      "https://www.tikwm.com/api/?url=" +
-      encodeURIComponent(url);
-
-    const response = await axios.get(apiUrl, {
-      timeout: 30000,
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36"
-      }
+    const response = await axios.get("https://tikwm.com/api/", {
+      params: {
+        url: url
+      },
+      timeout: 30000
     });
 
-    console.log("TikWM response:", response.data);
+    const data = response.data;
 
-    if (
-      !response.data ||
-      response.data.code !== 0 ||
-      !response.data.data
-    ) {
-      return res.status(400).json({
+    if (!data || !data.data || !data.data.play) {
+      return res.status(500).json({
         status: "error",
-        error:
-          response.data?.msg ||
-          "TikTok video could not be found"
-      });
-    }
-
-    const data = response.data.data;
-
-    const video =
-      data.hdplay ||
-      data.play ||
-      data.wmplay;
-
-    if (!video) {
-      return res.status(400).json({
-        status: "error",
-        error: "Video download link was not found"
+        error: "Failed to fetch TikTok video"
       });
     }
 
     res.json({
       status: "success",
-      title: data.title || "TikTok Video",
-      video: video,
-      cover: data.cover || "",
-      author: data.author?.nickname || ""
+      title: data.data.title || "TikTok Video",
+      video: data.data.play,
+      cover: data.data.cover || null
     });
 
   } catch (error) {
-    console.error("TikTok API Error:", error.message);
+    console.error("TikTok Error:", error.message);
 
     res.status(500).json({
       status: "error",
@@ -102,86 +65,61 @@ app.get("/api/tiktok", async (req, res) => {
 });
 
 
-// ================================
-// TIKTOK MP4 DOWNLOAD
-// ================================
+/* =========================
+   DOWNLOAD ENDPOINT
+========================= */
+
+// Ye endpoint bhi rakha hai taake
+// /api/tiktok/download wali problem na aaye.
 
 app.get("/api/tiktok/download", async (req, res) => {
   try {
     const url = req.query.url;
 
     if (!url) {
-      return res.status(400).send("TikTok URL is required");
+      return res.status(400).json({
+        status: "error",
+        error: "TikTok URL is required"
+      });
     }
 
-    if (!url.includes("tiktok.com")) {
-      return res.status(400).send("Invalid TikTok URL");
-    }
-
-    console.log("Downloading TikTok:", url);
-
-    const apiUrl =
-      "https://www.tikwm.com/api/?url=" +
-      encodeURIComponent(url);
-
-    const response = await axios.get(apiUrl, {
-      timeout: 30000,
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36"
-      }
+    const response = await axios.get("https://tikwm.com/api/", {
+      params: {
+        url: url
+      },
+      timeout: 30000
     });
 
-    if (
-      !response.data ||
-      response.data.code !== 0 ||
-      !response.data.data
-    ) {
-      return res.status(400).send("Could not get TikTok video");
+    const data = response.data;
+
+    if (!data || !data.data || !data.data.play) {
+      return res.status(500).json({
+        status: "error",
+        error: "Failed to fetch TikTok video"
+      });
     }
 
-    const videoUrl =
-      response.data.data.hdplay ||
-      response.data.data.play ||
-      response.data.data.wmplay;
-
-    if (!videoUrl) {
-      return res.status(400).send("Video download link not found");
-    }
-
-    console.log("Video URL found");
-
-    const video = await axios.get(videoUrl, {
-      responseType: "stream",
-      timeout: 120000,
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36"
-      }
+    res.json({
+      status: "success",
+      title: data.data.title || "TikTok Video",
+      video: data.data.play,
+      cover: data.data.cover || null
     });
-
-    res.setHeader("Content-Type", "video/mp4");
-
-    res.setHeader(
-      "Content-Disposition",
-      'attachment; filename="VideoFlow-TikTok.mp4"'
-    );
-
-    video.data.pipe(res);
 
   } catch (error) {
-    console.error("Download Error:", error.message);
+    console.error("TikTok Download Error:", error.message);
 
-    if (!res.headersSent) {
-      res.status(500).send("Failed to download video");
-    }
+    res.status(500).json({
+      status: "error",
+      error: "Failed to fetch TikTok video"
+    });
   }
 });
 
 
-// ================================
-// YOUTUBE THUMBNAIL
-// ================================
+/* =========================
+   YOUTUBE THUMBNAIL
+========================= */
 
 app.get("/api/thumbnail", (req, res) => {
   try {
@@ -194,27 +132,16 @@ app.get("/api/thumbnail", (req, res) => {
       });
     }
 
-    let videoId = "";
+    let videoId = null;
 
     // youtube.com/watch?v=
     if (url.includes("v=")) {
-      videoId = url
-        .split("v=")[1]
-        .split("&")[0];
+      videoId = url.split("v=")[1].split("&")[0];
     }
 
     // youtu.be/
-    else if (url.includes("youtu.be/")) {
-      videoId = url
-        .split("youtu.be/")[1]
-        .split("?")[0];
-    }
-
-    // youtube.com/shorts/
-    else if (url.includes("/shorts/")) {
-      videoId = url
-        .split("/shorts/")[1]
-        .split("?")[0];
+    if (url.includes("youtu.be/")) {
+      videoId = url.split("youtu.be/")[1].split("?")[0];
     }
 
     if (!videoId) {
@@ -225,14 +152,11 @@ app.get("/api/thumbnail", (req, res) => {
     }
 
     const thumbnail =
-      "https://img.youtube.com/vi/" +
-      videoId +
-      "/maxresdefault.jpg";
+      `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 
     res.json({
       status: "success",
-      thumbnail: thumbnail,
-      videoId: videoId
+      thumbnail: thumbnail
     });
 
   } catch (error) {
@@ -246,26 +170,12 @@ app.get("/api/thumbnail", (req, res) => {
 });
 
 
-// ================================
-// API HEALTH CHECK
-// ================================
-
-app.get("/api/health", (req, res) => {
-  res.json({
-    status: "success",
-    message: "VideoFlow API is running"
-  });
-});
-
-
-// ================================
-// START SERVER
-// ================================
+/* =========================
+   SERVER
+========================= */
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(
-    `VideoFlow server running on port ${PORT}`
-  );
+app.listen(PORT, () => {
+  console.log(`VideoFlow server running on port ${PORT}`);
 });
