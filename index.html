@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Tools</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #0b0b12;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      padding: 24px 14px;
+    }
+    .wrap { width: 100%; max-width: 760px; }
+    .hero { text-align: center; padding: 28px 8px 20px; }
+    .logo {
+      width: 64px; height: 64px; border-radius: 18px;
+      margin: 0 auto 16px; display: grid; place-items: center;
+      background: linear-gradient(135deg, #ff0050, #00f2ea);
+      font-size: 30px; font-weight: 800;
+    }
+    h1 { margin: 0 0 8px; font-size: 32px; }
+    .sub { color: #a9a9b5; margin: 0; }
+    .card {
+      background: #151520; border: 1px solid #292938;
+      border-radius: 20px; padding: 22px; margin-top: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.25);
+    }
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .tab {
+      flex: 1; border: 1px solid #303044; background: #10101a;
+      color: #aaaabd; padding: 12px; border-radius: 12px;
+      cursor: pointer; font-weight: 700;
+    }
+    .tab.active { background: #242033; color: #fff; border-color: #7c3aed; }
+    label { display:block; margin-bottom: 9px; font-weight: 700; }
+    .row { display:flex; gap:10px; }
+    input {
+      width:100%; padding:15px; border-radius:12px;
+      border:1px solid #353548; background:#0d0d15; color:#fff;
+      outline:none; font-size:15px;
+    }
+    input:focus { border-color:#8b5cf6; }
+    button.main {
+      border:0; border-radius:12px; padding:0 20px;
+      background:linear-gradient(135deg,#7c3aed,#a855f7);
+      color:#fff; font-weight:800; cursor:pointer; min-width:125px;
+    }
+    button:disabled { opacity:.55; cursor:not-allowed; }
+    .status { margin-top:16px; color:#aaaabd; min-height:24px; }
+    .result {
+      margin-top:16px; padding:16px; border-radius:14px;
+      background:#0e0e17; border:1px solid #2b2b3b;
+    }
+    .result h3 { margin:0 0 8px; font-size:17px; }
+    .title { color:#d7d7e2; word-break:break-word; }
+    .download, .open {
+      display:inline-block; margin-top:14px; margin-right:8px;
+      padding:12px 16px; border-radius:10px; text-decoration:none;
+      font-weight:800;
+    }
+    .download { background:#22c55e; color:#07120a; }
+    .open { background:#29293a; color:#fff; }
+    .hint { color:#858595; font-size:13px; margin-top:14px; line-height:1.5; }
+    .error { color:#ff8d9d; }
+    .success { color:#6ee7a0; }
+    .thumb { width:100%; border-radius:12px; margin-top:14px; display:none; }
+    .footer { text-align:center; color:#666675; font-size:12px; padding:22px; }
+    @media (max-width: 560px) {
+      .row { flex-direction:column; }
+      button.main { min-height:48px; }
+      h1 { font-size:27px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="logo">▶</div>
+    <h1>Video Tools</h1>
+    <p class="sub">Simple TikTok & YouTube tools</p>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" id="tiktokTab">TikTok Downloader</button>
+      <button class="tab" id="thumbTab">YouTube Thumbnail</button>
+    </div>
+
+    <div id="tiktokPanel">
+      <label for="tiktokUrl">TikTok video URL</label>
+      <div class="row">
+        <input id="tiktokUrl" type="url" placeholder="https://vm.tiktok.com/..." autocomplete="off">
+        <button class="main" id="tiktokBtn">Get Video</button>
+      </div>
+      <div id="tiktokStatus" class="status"></div>
+      <div id="tiktokResult"></div>
+      <div class="hint">Paste a TikTok link and tap “Get Video”.</div>
+    </div>
+
+    <div id="thumbPanel" style="display:none">
+      <label for="youtubeUrl">YouTube video URL</label>
+      <div class="row">
+        <input id="youtubeUrl" type="url" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+        <button class="main" id="thumbBtn">Get Thumbnail</button>
+      </div>
+      <div id="thumbStatus" class="status"></div>
+      <div id="thumbResult"></div>
+    </div>
+  </div>
+
+  <div class="footer">Powered by your Railway API</div>
+</div>
+
+<script>
+  const API = window.location.origin;
+
+  const tiktokTab = document.getElementById('tiktokTab');
+  const thumbTab = document.getElementById('thumbTab');
+  const tiktokPanel = document.getElementById('tiktokPanel');
+  const thumbPanel = document.getElementById('thumbPanel');
+
+  tiktokTab.onclick = () => {
+    tiktokTab.classList.add('active');
+    thumbTab.classList.remove('active');
+    tiktokPanel.style.display = '';
+    thumbPanel.style.display = 'none';
+  };
+
+  thumbTab.onclick = () => {
+    thumbTab.classList.add('active');
+    tiktokTab.classList.remove('active');
+    thumbPanel.style.display = '';
+    tiktokPanel.style.display = 'none';
+  };
+
+  document.getElementById('tiktokBtn').onclick = async () => {
+    const input = document.getElementById('tiktokUrl');
+    const status = document.getElementById('tiktokStatus');
+    const result = document.getElementById('tiktokResult');
+    const btn = document.getElementById('tiktokBtn');
+    const url = input.value.trim();
+
+    result.innerHTML = '';
+    if (!url) {
+      status.innerHTML = '<span class="error">Please paste a TikTok URL.</span>';
+      return;
+    }
+
+    btn.disabled = true;
+    status.textContent = 'Getting video...';
+
+    try {
+      const r = await fetch(API + '/api/tiktok?url=' + encodeURIComponent(url));
+      const data = await r.json();
+
+      if (!r.ok || data.status !== 'success' || !data.video) {
+        throw new Error(data.error || 'Could not get the video.');
+      }
+
+      result.innerHTML = `
+        <div class="result">
+          <h3>Video found ✅</h3>
+          <div class="title">${escapeHtml(data.title || 'TikTok video')}</div>
+          <a class="download" href="${escapeAttr(data.video)}" target="_blank" rel="noopener">Download / Open Video</a>
+        </div>`;
+      status.innerHTML = '<span class="success">Success!</span>';
+    } catch (e) {
+      status.innerHTML = '<span class="error">' + escapeHtml(e.message) + '</span>';
+    } finally {
+      btn.disabled = false;
+    }
+  };
+
+  document.getElementById('thumbBtn').onclick = async () => {
+    const input = document.getElementById('youtubeUrl');
+    const status = document.getElementById('thumbStatus');
+    const result = document.getElementById('thumbResult');
+    const btn = document.getElementById('thumbBtn');
+    const url = input.value.trim();
+
+    result.innerHTML = '';
+    if (!url) {
+      status.innerHTML = '<span class="error">Please paste a YouTube URL.</span>';
+      return;
+    }
+
+    btn.disabled = true;
+    status.textContent = 'Getting thumbnail...';
+
+    try {
+      const r = await fetch(API + '/api/thumbnail?url=' + encodeURIComponent(url));
+      const data = await r.json();
+
+      if (!r.ok || data.status !== 'success' || !data.thumbnail) {
+        throw new Error(data.error || 'Could not get thumbnail.');
+      }
+
+      result.innerHTML = `
+        <div class="result">
+          <h3>Thumbnail found ✅</h3>
+          <img class="thumb" style="display:block" src="${escapeAttr(data.thumbnail)}" alt="YouTube thumbnail">
+          <a class="download" href="${escapeAttr(data.thumbnail)}" target="_blank" rel="noopener">Open Thumbnail</a>
+        </div>`;
+      status.innerHTML = '<span class="success">Success!</span>';
+    } catch (e) {
+      status.innerHTML = '<span class="error">' + escapeHtml(e.message) + '</span>';
+    } finally {
+      btn.disabled = false;
+    }
+  };
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+    }[c]));
+  }
+  function escapeAttr(s) {
+    return escapeHtml(s);
+  }
+</script>
+</body>
+</html>
