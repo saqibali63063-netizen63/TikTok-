@@ -1,866 +1,565 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
-
-<meta
-  name="description"
-  content="VideoFlow - Fast and simple TikTok video downloader and YouTube thumbnail tool."
->
-
-<title>VideoFlow - Video Tools</title>
-
+<title>VideoFlow - Video Downloader</title>
 
 <style>
 
-/* =====================================================
-   RESET
-===================================================== */
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
 
-
-html {
-  scroll-behavior: smooth;
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f7f9fc;
+  color:#111827;
 }
 
+/* HEADER */
 
-body {
+header{
+  width:100%;
+  background:white;
+  border-bottom:1px solid #e5e7eb;
+  position:sticky;
+  top:0;
+  z-index:100;
+}
 
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
+.nav{
+  max-width:1150px;
+  margin:auto;
+  padding:16px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
 
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:23px;
+  font-weight:800;
+}
+
+.brand-icon{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-size:20px;
+  background:linear-gradient(135deg,#111827,#2563eb);
+}
+
+/* HERO */
+
+.hero{
   background:
-    radial-gradient(
-      circle at top,
-      #21183d 0%,
-      #0b0b12 42%,
-      #08080d 100%
-    );
+    radial-gradient(circle at 20% 20%,#dbeafe 0,transparent 35%),
+    radial-gradient(circle at 80% 10%,#ede9fe 0,transparent 35%),
+    white;
 
-  color: #ffffff;
-
-  min-height: 100vh;
-
+  padding:75px 20px 55px;
+  text-align:center;
 }
 
-
-/* =====================================================
-   HERO
-===================================================== */
-
-.hero {
-
-  text-align: center;
-
-  padding:
-    70px 20px
-    45px;
-
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 15px;
+  border-radius:30px;
+  background:#eff6ff;
+  color:#2563eb;
+  font-size:14px;
+  font-weight:bold;
+  margin-bottom:20px;
 }
 
-
-.logo {
-
-  width: 105px;
-  height: 105px;
-
-  margin: 0 auto 25px;
-
-  border-radius: 30px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  font-size: 48px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #ff007a,
-      #7b35ed,
-      #00bfff
-    );
-
-  box-shadow:
-    0 20px 60px
-    rgba(125, 53, 237, 0.35);
-
+.hero h1{
+  max-width:850px;
+  margin:auto;
+  font-size:54px;
+  line-height:1.08;
+  font-weight:850;
+  letter-spacing:-2px;
 }
 
-
-h1 {
-
-  font-size: 52px;
-
-  font-weight: 800;
-
-  letter-spacing: -1px;
-
+.hero h1 span{
+  color:#2563eb;
 }
 
-
-.subtitle {
-
-  margin-top: 12px;
-
-  color: #aaa;
-
-  font-size: 19px;
-
+.hero p{
+  max-width:650px;
+  margin:20px auto 0;
+  color:#64748b;
+  font-size:19px;
+  line-height:1.6;
 }
 
+/* MAIN */
 
-/* =====================================================
-   MAIN
-===================================================== */
-
-.container {
-
-  width: 100%;
-
-  max-width: 680px;
-
-  margin: auto;
-
-  padding:
-    0 18px
-    50px;
-
+.container{
+  max-width:900px;
+  margin:-15px auto 60px;
+  padding:0 20px;
 }
 
+/* DOWNLOADER CARD */
 
-/* =====================================================
-   MAIN CARD
-===================================================== */
-
-.card {
-
-  background:
-    rgba(17, 17, 24, 0.92);
-
-  border:
-    1px solid #2b2b39;
-
-  border-radius: 30px;
-
-  padding: 28px;
-
-  box-shadow:
-    0 25px 80px
-    rgba(0, 0, 0, 0.35);
-
+.downloader-card{
+  background:white;
+  border:1px solid #e5e7eb;
+  border-radius:25px;
+  padding:30px;
+  box-shadow:0 20px 50px rgba(15,23,42,.08);
 }
 
+/* TABS */
 
-/* =====================================================
-   TABS
-===================================================== */
-
-.tabs {
-
-  display: flex;
-
-  gap: 12px;
-
-  margin-bottom: 35px;
-
+.tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:30px;
 }
 
-
-.tab {
-
-  flex: 1;
-
-  min-height: 75px;
-
-  padding: 15px 10px;
-
-  border-radius: 20px;
-
-  border:
-    1px solid #30303d;
-
-  background:
-    #0d0d13;
-
-  color: #999;
-
-  font-size: 17px;
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition: 0.25s;
-
+.tab{
+  border:1px solid #e5e7eb;
+  background:#f8fafc;
+  color:#64748b;
+  padding:17px;
+  border-radius:15px;
+  font-size:17px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
 }
 
-
-.tab:hover {
-
-  border-color: #7140d9;
-
-  color: white;
-
+.tab:hover{
+  background:#f1f5f9;
 }
 
-
-.tab.active {
-
-  color: white;
-
-  border:
-    2px solid #9147ff;
-
-  background:
-    linear-gradient(
-      135deg,
-      #24163e,
-      #171126
-    );
-
-  box-shadow:
-    0 0 25px
-    rgba(145, 71, 255, 0.12);
-
+.tab.active{
+  background:#eff6ff;
+  border-color:#2563eb;
+  color:#2563eb;
 }
 
+/* FORM */
 
-/* =====================================================
-   LABEL
-===================================================== */
-
-label {
-
-  display: block;
-
-  font-size: 23px;
-
-  font-weight: 750;
-
-  margin-bottom: 14px;
-
+.label{
+  font-size:18px;
+  font-weight:750;
+  margin-bottom:10px;
+  display:block;
 }
 
-
-/* =====================================================
-   INPUT
-===================================================== */
-
-input {
-
-  width: 100%;
-
-  padding: 21px;
-
-  border-radius: 20px;
-
-  border:
-    2px solid #2b2b39;
-
-  background:
-    #09090e;
-
-  color: white;
-
-  font-size: 16px;
-
-  outline: none;
-
-  margin-bottom: 17px;
-
-  transition: 0.2s;
-
+.input-row{
+  display:flex;
+  gap:10px;
 }
 
-
-input::placeholder {
-
-  color: #777;
-
+.input{
+  flex:1;
+  height:58px;
+  border:2px solid #e5e7eb;
+  background:#fff;
+  border-radius:15px;
+  padding:0 18px;
+  font-size:16px;
+  outline:none;
+  color:#111827;
+  transition:.2s;
 }
 
-
-input:focus {
-
-  border-color: #8b45ff;
-
-  box-shadow:
-    0 0 0 4px
-    rgba(139, 69, 255, 0.08);
-
+.input:focus{
+  border-color:#2563eb;
+  box-shadow:0 0 0 4px rgba(37,99,235,.08);
 }
 
-
-/* =====================================================
-   MAIN BUTTON
-===================================================== */
-
-.main-btn {
-
-  width: 100%;
-
-  padding: 21px;
-
-  border: none;
-
-  border-radius: 20px;
-
-  background:
-    linear-gradient(
-      90deg,
-      #7833ed,
-      #b64df0
-    );
-
-  color: white;
-
-  font-size: 20px;
-
-  font-weight: 800;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 12px 35px
-    rgba(125, 53, 237, 0.25);
-
-  transition: 0.2s;
-
+.get-btn{
+  height:58px;
+  padding:0 27px;
+  border:0;
+  border-radius:15px;
+  background:#2563eb;
+  color:white;
+  font-size:16px;
+  font-weight:750;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(37,99,235,.25);
+  transition:.2s;
 }
 
-
-.main-btn:hover {
-
-  transform:
-    translateY(-2px);
-
-  box-shadow:
-    0 15px 40px
-    rgba(125, 53, 237, 0.35);
-
+.get-btn:hover{
+  background:#1d4ed8;
+  transform:translateY(-1px);
 }
 
-
-.main-btn:active {
-
-  transform:
-    translateY(0);
-
+.get-btn:disabled{
+  opacity:.6;
+  cursor:not-allowed;
 }
 
+/* TRUST */
 
-.main-btn:disabled {
-
-  opacity: 0.6;
-
-  cursor:
-    not-allowed;
-
-  transform:
-    none;
-
+.trust{
+  display:flex;
+  justify-content:center;
+  gap:25px;
+  flex-wrap:wrap;
+  margin-top:18px;
+  color:#64748b;
+  font-size:13px;
 }
 
-
-/* =====================================================
-   MESSAGE
-===================================================== */
-
-.message {
-
-  margin-top: 18px;
-
-  color: #ff7896;
-
-  font-size: 16px;
-
-  line-height: 1.5;
-
+.trust span{
+  display:flex;
+  align-items:center;
+  gap:5px;
 }
 
+/* MESSAGE */
 
-/* =====================================================
-   RESULT
-===================================================== */
-
-.result {
-
-  display: none;
-
-  margin-top: 28px;
-
-  border:
-    1px solid #30303d;
-
-  border-radius: 25px;
-
-  padding: 14px;
-
-  background:
-    #0a0a10;
-
+.message{
+  margin-top:15px;
+  color:#dc2626;
+  font-size:14px;
 }
 
+/* RESULT */
 
-.result video {
-
-  width: 100%;
-
-  max-height: 600px;
-
-  display: block;
-
-  border-radius: 19px;
-
-  background: black;
-
+.result{
+  display:none;
+  margin-top:25px;
+  padding:18px;
+  border-radius:20px;
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
 }
 
-
-/* =====================================================
-   BUTTON AREA
-===================================================== */
-
-.buttons {
-
-  display: grid;
-
-  grid-template-columns:
-    1fr 1fr;
-
-  gap: 12px;
-
-  margin-top: 16px;
-
+.video-wrapper{
+  background:#000;
+  border-radius:16px;
+  overflow:hidden;
 }
 
-
-/* =====================================================
-   DOWNLOAD BUTTON
-===================================================== */
-
-.download-btn {
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  min-height: 60px;
-
-  padding: 15px;
-
-  border: none;
-
-  border-radius: 18px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #20d36d,
-      #16bd5d
-    );
-
-  color: #001d0d;
-
-  font-size: 17px;
-
-  font-weight: 800;
-
-  text-decoration: none;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-
+.video-wrapper video{
+  width:100%;
+  max-height:600px;
+  display:block;
+  background:#000;
 }
 
+/* RESULT BUTTONS */
 
-.download-btn:hover {
-
-  transform:
-    translateY(-2px);
-
+.result-buttons{
+  display:grid;
+  grid-template-columns:1.5fr 1fr 1fr;
+  gap:10px;
+  margin-top:15px;
 }
 
-
-/* =====================================================
-   OPEN BUTTON
-===================================================== */
-
-.open-btn {
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  min-height: 60px;
-
-  padding: 15px;
-
-  border-radius: 18px;
-
-  background:
-    #252837;
-
-  color: white;
-
-  font-size: 17px;
-
-  font-weight: 700;
-
-  text-decoration: none;
-
-  transition: 0.2s;
-
+.result-btn{
+  min-height:52px;
+  border:0;
+  border-radius:13px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  font-size:15px;
+  font-weight:750;
+  cursor:pointer;
 }
 
-
-.open-btn:hover {
-
-  background:
-    #303346;
-
+.download-btn{
+  background:#16a34a;
+  color:white;
 }
 
-
-/* =====================================================
-   COPY BUTTON
-===================================================== */
-
-.copy-btn {
-
-  grid-column:
-    1 / -1;
-
-  min-height: 58px;
-
-  border: none;
-
-  border-radius: 18px;
-
-  background:
-    #252837;
-
-  color: white;
-
-  font-size: 17px;
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-
+.download-btn:hover{
+  background:#15803d;
 }
 
-
-.copy-btn:hover {
-
-  background:
-    #303346;
-
+.open-btn{
+  background:#e2e8f0;
+  color:#0f172a;
 }
 
-
-/* =====================================================
-   INFO
-===================================================== */
-
-.info {
-
-  margin-top: 22px;
-
-  color: #858592;
-
-  font-size: 15px;
-
-  line-height: 1.5;
-
-  text-align: center;
-
+.copy-btn{
+  background:#e2e8f0;
+  color:#0f172a;
 }
 
+/* INFO */
 
-/* =====================================================
-   FEATURES
-===================================================== */
-
-.features {
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(3, 1fr);
-
-  gap: 13px;
-
-  margin-top: 18px;
-
+.info{
+  text-align:center;
+  color:#64748b;
+  font-size:14px;
+  margin-top:18px;
 }
 
+/* HOW IT WORKS */
 
-.feature {
-
-  text-align: center;
-
-  padding: 24px 12px;
-
-  border:
-    1px solid #292936;
-
-  border-radius: 22px;
-
-  background:
-    rgba(16, 16, 23, 0.85);
-
+.section{
+  max-width:1100px;
+  margin:70px auto;
+  padding:0 20px;
 }
 
-
-.feature-icon {
-
-  font-size: 25px;
-
-  margin-bottom: 10px;
-
+.section-title{
+  text-align:center;
+  font-size:32px;
+  margin-bottom:35px;
 }
 
-
-.feature h2 {
-
-  font-size: 17px;
-
-  margin-bottom: 7px;
-
+.steps{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
 }
 
-
-.feature p {
-
-  color: #858592;
-
-  font-size: 13px;
-
-  line-height: 1.4;
-
+.step{
+  background:white;
+  border:1px solid #e5e7eb;
+  border-radius:20px;
+  padding:28px 20px;
+  text-align:center;
 }
 
-
-/* =====================================================
-   YOUTUBE IMAGE
-===================================================== */
-
-#thumbnail {
-
-  width: 100%;
-
-  border-radius: 19px;
-
-  display: block;
-
+.step-icon{
+  width:55px;
+  height:55px;
+  margin:0 auto 18px;
+  border-radius:16px;
+  background:#eff6ff;
+  color:#2563eb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
 }
 
-
-/* =====================================================
-   FOOTER
-===================================================== */
-
-.footer {
-
-  text-align: center;
-
-  color: #555563;
-
-  font-size: 13px;
-
-  padding:
-    10px 20px
-    40px;
-
+.step h3{
+  margin-bottom:8px;
+  font-size:18px;
 }
 
+.step p{
+  color:#64748b;
+  line-height:1.5;
+  font-size:14px;
+}
 
-/* =====================================================
-   MOBILE
-===================================================== */
+/* FEATURES */
 
-@media (max-width: 600px) {
+.features{
+  max-width:1100px;
+  margin:70px auto;
+  padding:0 20px;
+}
 
-  .hero {
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
 
-    padding:
-      45px 18px
-      35px;
+.feature{
+  background:white;
+  border:1px solid #e5e7eb;
+  border-radius:20px;
+  padding:25px;
+}
 
+.feature-icon{
+  font-size:25px;
+  margin-bottom:15px;
+}
+
+.feature h3{
+  margin-bottom:8px;
+}
+
+.feature p{
+  color:#64748b;
+  line-height:1.5;
+  font-size:14px;
+}
+
+/* YOUTUBE */
+
+#youtubeBox{
+  display:none;
+}
+
+.thumbnail-result{
+  margin-top:25px;
+  display:none;
+  padding:18px;
+  border-radius:20px;
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+}
+
+.thumbnail-result img{
+  width:100%;
+  display:block;
+  border-radius:15px;
+}
+
+.thumbnail-buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:15px;
+}
+
+/* FOOTER */
+
+footer{
+  background:#0f172a;
+  color:white;
+  text-align:center;
+  padding:35px 20px;
+}
+
+footer p{
+  color:#94a3b8;
+  font-size:14px;
+  margin-top:8px;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+  .hero{
+    padding:55px 18px 45px;
   }
 
-
-  .logo {
-
-    width: 90px;
-
-    height: 90px;
-
-    border-radius: 27px;
-
-    font-size: 40px;
-
+  .hero h1{
+    font-size:40px;
+    letter-spacing:-1.5px;
   }
 
-
-  h1 {
-
-    font-size: 42px;
-
+  .hero p{
+    font-size:16px;
   }
 
-
-  .subtitle {
-
-    font-size: 17px;
-
+  .container{
+    margin-top:-5px;
+    padding:0 14px;
   }
 
-
-  .container {
-
-    padding:
-      0 12px
-      35px;
-
+  .downloader-card{
+    padding:20px;
+    border-radius:22px;
   }
 
-
-  .card {
-
-    padding: 20px 16px;
-
-    border-radius: 25px;
-
+  .tabs{
+    gap:8px;
   }
 
-
-  .tabs {
-
-    gap: 8px;
-
+  .tab{
+    font-size:14px;
+    padding:15px 8px;
   }
 
-
-  .tab {
-
-    min-height: 70px;
-
-    font-size: 15px;
-
-    padding: 10px 5px;
-
+  .input-row{
+    display:block;
   }
 
-
-  label {
-
-    font-size: 21px;
-
+  .input{
+    width:100%;
+    margin-bottom:10px;
   }
 
-
-  input {
-
-    padding: 19px;
-
+  .get-btn{
+    width:100%;
   }
 
-
-  .main-btn {
-
-    padding: 20px;
-
+  .result-buttons{
+    grid-template-columns:1fr;
   }
 
-
-  .buttons {
-
-    grid-template-columns:
-      1fr;
-
+  .steps{
+    grid-template-columns:1fr;
   }
 
-
-  .copy-btn {
-
-    grid-column:
-      auto;
-
+  .feature-grid{
+    grid-template-columns:1fr;
   }
 
-
-  .features {
-
-    grid-template-columns:
-      1fr;
-
+  .section-title{
+    font-size:27px;
   }
 
 }
 
 </style>
-
 </head>
-
 
 <body>
 
 
-<!-- =====================================================
-     HERO
-===================================================== -->
+<!-- HEADER -->
+
+<header>
+
+  <div class="nav">
+
+    <div class="brand">
+
+      <div class="brand-icon">▶</div>
+
+      VideoFlow
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<!-- HERO -->
 
 <section class="hero">
 
-  <div class="logo">
-    ▶
+  <div class="badge">
+    ⚡ Fast & Simple Video Tools
   </div>
 
   <h1>
-    VideoFlow
+    Download Videos
+    <span>Quickly & Easily</span>
   </h1>
 
-  <p class="subtitle">
-    Fast, clean and simple video tools
+  <p>
+    Fast, clean and simple tools for downloading TikTok videos
+    and getting YouTube thumbnails.
   </p>
 
 </section>
 
 
-<!-- =====================================================
-     MAIN
-===================================================== -->
+<!-- MAIN DOWNLOADER -->
 
 <main class="container">
 
-
-  <div class="card">
+  <div class="downloader-card">
 
 
     <!-- TABS -->
@@ -870,50 +569,59 @@ input:focus {
       <button
         class="tab active"
         id="tiktokTab"
+        onclick="showTikTok()"
       >
-        TikTok<br>
-        Downloader
+        🎵 TikTok Downloader
       </button>
-
 
       <button
         class="tab"
         id="youtubeTab"
+        onclick="showYouTube()"
       >
-        YouTube<br>
-        Thumbnail
+        ▶ YouTube Thumbnail
       </button>
 
     </div>
 
 
-    <!-- =================================================
-         TIKTOK
-    ================================================== -->
+    <!-- TIKTOK -->
 
     <div id="tiktokBox">
 
-
-      <label>
+      <label class="label">
         TikTok video link
       </label>
 
+      <div class="input-row">
 
-      <input
-        type="text"
-        id="tiktokUrl"
-        placeholder="Paste your TikTok link here..."
-        autocomplete="off"
-      >
+        <input
+          class="input"
+          id="tiktokUrl"
+          type="text"
+          placeholder="Paste your TikTok link here..."
+        >
+
+        <button
+          class="get-btn"
+          id="getVideoBtn"
+          onclick="getTikTokVideo()"
+        >
+          Get Video
+        </button>
+
+      </div>
 
 
-      <button
-        class="main-btn"
-        id="getVideoBtn"
-        onclick="getTikTokVideo()"
-      >
-        Get Video
-      </button>
+      <div class="trust">
+
+        <span>✓ Free to use</span>
+
+        <span>✓ Fast processing</span>
+
+        <span>✓ No account required</span>
+
+      </div>
 
 
       <div
@@ -922,58 +630,52 @@ input:focus {
       ></div>
 
 
-      <!-- RESULT -->
+      <!-- VIDEO RESULT -->
 
       <div
         id="result"
         class="result"
       >
 
+        <div class="video-wrapper">
 
-        <video
-          id="videoPlayer"
-          controls
-          playsinline
-        ></video>
+          <video
+            id="videoPlayer"
+            controls
+            playsinline
+          ></video>
+
+        </div>
 
 
-        <div class="buttons">
-
-
-          <!-- DIRECT DOWNLOAD -->
+        <div class="result-buttons">
 
           <a
             id="downloadBtn"
-            class="download-btn"
+            class="result-btn download-btn"
             href="#"
           >
             ↓ Download MP4
           </a>
 
 
-          <!-- OPEN VIDEO -->
-
           <a
             id="openBtn"
-            class="open-btn"
+            class="result-btn open-btn"
             href="#"
             target="_blank"
-            rel="noopener"
           >
             ▶ Open
           </a>
 
 
-          <!-- COPY -->
-
           <button
             id="copyBtn"
-            class="copy-btn"
+            class="result-btn copy-btn"
             onclick="copyVideoLink()"
           >
-            Copy Link
+            🔗 Copy Link
           </button>
-
 
         </div>
 
@@ -981,50 +683,49 @@ input:focus {
 
 
       <p class="info">
-        Paste a public TikTok video URL and tap
-        Get Video.
+        Paste a public TikTok video URL and click Get Video.
       </p>
-
 
     </div>
 
 
-    <!-- =================================================
-         YOUTUBE
-    ================================================== -->
+    <!-- YOUTUBE -->
 
-    <div
-      id="youtubeBox"
-      style="display:none;"
-    >
+    <div id="youtubeBox">
 
-
-      <label>
+      <label class="label">
         YouTube video link
       </label>
 
+      <div class="input-row">
 
-      <input
-        type="text"
-        id="youtubeUrl"
-        placeholder="Paste YouTube link here..."
-        autocomplete="off"
-      >
+        <input
+          class="input"
+          id="youtubeUrl"
+          type="text"
+          placeholder="Paste your YouTube link here..."
+        >
 
+        <button
+          class="get-btn"
+          onclick="getYouTubeThumbnail()"
+        >
+          Get Thumbnail
+        </button>
 
-      <button
-        class="main-btn"
-        onclick="getYouTubeThumbnail()"
-      >
-        Get Thumbnail
-      </button>
+      </div>
 
 
       <div
-        id="youtubeResult"
-        class="result"
-      >
+        id="youtubeMessage"
+        class="message"
+      ></div>
 
+
+      <div
+        id="thumbnailResult"
+        class="thumbnail-result"
+      >
 
         <img
           id="thumbnail"
@@ -1032,226 +733,244 @@ input:focus {
         >
 
 
-        <div class="buttons">
-
+        <div class="thumbnail-buttons">
 
           <a
             id="thumbnailDownload"
-            class="download-btn"
+            class="result-btn download-btn"
             href="#"
-            target="_blank"
-            rel="noopener"
           >
             ↓ Download Thumbnail
           </a>
 
-
           <a
             id="thumbnailOpen"
-            class="open-btn"
+            class="result-btn open-btn"
             href="#"
             target="_blank"
-            rel="noopener"
           >
             ▶ Open
           </a>
 
-
         </div>
-
 
       </div>
 
 
       <p class="info">
-        Paste a YouTube video URL to get its
-        thumbnail.
+        Paste a YouTube video URL to get its thumbnail.
       </p>
 
-
     </div>
-
 
   </div>
-
-
-  <!-- =================================================
-       FEATURES
-  ================================================== -->
-
-  <div class="features">
-
-
-    <div class="feature">
-
-      <div class="feature-icon">
-        ⚡
-      </div>
-
-      <h2>
-        Fast
-      </h2>
-
-      <p>
-        Quick video processing
-      </p>
-
-    </div>
-
-
-    <div class="feature">
-
-      <div class="feature-icon">
-        📱
-      </div>
-
-      <h2>
-        Mobile
-      </h2>
-
-      <p>
-        Works perfectly on phones
-      </p>
-
-    </div>
-
-
-    <div class="feature">
-
-      <div class="feature-icon">
-        🔒
-      </div>
-
-      <h2>
-        Simple
-      </h2>
-
-      <p>
-        No account required
-      </p>
-
-    </div>
-
-
-  </div>
-
 
 </main>
 
 
-<footer class="footer">
+<!-- HOW IT WORKS -->
 
-  VideoFlow © 2026
+<section class="section">
+
+  <h2 class="section-title">
+    How It Works
+  </h2>
+
+
+  <div class="steps">
+
+    <div class="step">
+
+      <div class="step-icon">🔗</div>
+
+      <h3>1. Paste Link</h3>
+
+      <p>
+        Copy the video link from TikTok and
+        paste it into the box above.
+      </p>
+
+    </div>
+
+
+    <div class="step">
+
+      <div class="step-icon">⚡</div>
+
+      <h3>2. Get Video</h3>
+
+      <p>
+        Click the Get Video button and wait
+        a few seconds for processing.
+      </p>
+
+    </div>
+
+
+    <div class="step">
+
+      <div class="step-icon">⬇</div>
+
+      <h3>3. Download</h3>
+
+      <p>
+        Preview your video and download
+        the MP4 file directly.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- FEATURES -->
+
+<section class="features">
+
+  <h2 class="section-title">
+    Why Use VideoFlow?
+  </h2>
+
+
+  <div class="feature-grid">
+
+    <div class="feature">
+
+      <div class="feature-icon">⚡</div>
+
+      <h3>Fast</h3>
+
+      <p>
+        Quick API processing gives you your
+        video without unnecessary waiting.
+      </p>
+
+    </div>
+
+
+    <div class="feature">
+
+      <div class="feature-icon">📱</div>
+
+      <h3>Mobile Friendly</h3>
+
+      <p>
+        Designed to work smoothly on phones,
+        tablets and desktop devices.
+      </p>
+
+    </div>
+
+
+    <div class="feature">
+
+      <div class="feature-icon">🔒</div>
+
+      <h3>Simple</h3>
+
+      <p>
+        No account or complicated setup is
+        required to use the basic tools.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+  <strong>VideoFlow</strong>
+
+  <p>
+    Fast, clean and simple video tools.
+  </p>
 
 </footer>
 
 
 <script>
 
-
-/* =====================================================
+/* =========================
    TABS
-===================================================== */
+========================= */
 
-const tiktokTab =
-  document.getElementById("tiktokTab");
+function showTikTok(){
 
-const youtubeTab =
-  document.getElementById("youtubeTab");
+  document
+    .getElementById("tiktokBox")
+    .style.display = "block";
 
-const tiktokBox =
-  document.getElementById("tiktokBox");
+  document
+    .getElementById("youtubeBox")
+    .style.display = "none";
 
-const youtubeBox =
-  document.getElementById("youtubeBox");
+  document
+    .getElementById("tiktokTab")
+    .classList.add("active");
 
+  document
+    .getElementById("youtubeTab")
+    .classList.remove("active");
 
-tiktokTab.onclick = function () {
-
-  tiktokTab.classList.add("active");
-
-  youtubeTab.classList.remove("active");
-
-  tiktokBox.style.display =
-    "block";
-
-  youtubeBox.style.display =
-    "none";
-
-};
+}
 
 
-youtubeTab.onclick = function () {
+function showYouTube(){
 
-  youtubeTab.classList.add("active");
+  document
+    .getElementById("tiktokBox")
+    .style.display = "none";
 
-  tiktokTab.classList.remove("active");
+  document
+    .getElementById("youtubeBox")
+    .style.display = "block";
 
-  youtubeBox.style.display =
-    "block";
+  document
+    .getElementById("youtubeTab")
+    .classList.add("active");
 
-  tiktokBox.style.display =
-    "none";
+  document
+    .getElementById("tiktokTab")
+    .classList.remove("active");
 
-};
+}
 
 
-/* =====================================================
+/* =========================
    TIKTOK
-===================================================== */
+========================= */
 
-async function getTikTokVideo() {
-
+async function getTikTokVideo(){
 
   const input =
-    document.getElementById(
-      "tiktokUrl"
-    );
-
+    document.getElementById("tiktokUrl");
 
   const message =
-    document.getElementById(
-      "message"
-    );
-
+    document.getElementById("message");
 
   const result =
-    document.getElementById(
-      "result"
-    );
-
+    document.getElementById("result");
 
   const button =
-    document.getElementById(
-      "getVideoBtn"
-    );
-
-
-  const downloadBtn =
-    document.getElementById(
-      "downloadBtn"
-    );
-
-
-  const openBtn =
-    document.getElementById(
-      "openBtn"
-    );
-
+    document.getElementById("getVideoBtn");
 
   const url =
     input.value.trim();
 
 
-  message.innerText =
-    "";
+  message.innerText = "";
+
+  result.style.display = "none";
 
 
-  result.style.display =
-    "none";
-
-
-  if (!url) {
+  if(!url){
 
     message.innerText =
       "Please paste a TikTok URL.";
@@ -1261,134 +980,218 @@ async function getTikTokVideo() {
   }
 
 
-  button.disabled =
-    true;
+  button.disabled = true;
+
+  button.innerText = "Loading...";
 
 
-  button.innerText =
-    "Getting Video...";
+  try{
+
+    /*
+      IMPORTANT:
+      Tumhare current server.js ke
+      according POST request bheji ja rahi hai.
+    */
+
+    const response = await fetch(
+      "/api/tiktok/download",
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+          url:url,
+          tiktokUrl:url
+        })
+      }
+    );
 
 
-  try {
-
-
-    /* -----------------------------------------------
-       Get video information
-    ------------------------------------------------ */
-
-    const response =
-      await fetch(
-        "/api/tiktok?url=" +
-        encodeURIComponent(url)
-      );
-
+    /*
+      Server agar JSON de to parse hoga.
+    */
 
     const data =
       await response.json();
 
 
-    if (!response.ok) {
+    if(!response.ok){
 
       throw new Error(
         data.error ||
-        "Failed to fetch video"
+        data.message ||
+        "Failed to fetch video."
       );
 
     }
 
 
+    /*
+      Different response formats handle.
+    */
+
     const videoUrl =
-      data.video;
+      data.videoUrl ||
+      data.downloadUrl ||
+      data.url ||
+      data.video ||
+      data.data?.videoUrl ||
+      data.data?.downloadUrl ||
+      data.data?.video;
 
 
-    if (!videoUrl) {
+    if(!videoUrl){
 
       throw new Error(
+        data.error ||
         "Video link not found."
       );
 
     }
 
 
-    /* -----------------------------------------------
-       Video player
-    ------------------------------------------------ */
-
     const player =
-      document.getElementById(
-        "videoPlayer"
-      );
+      document.getElementById("videoPlayer");
+
+    const download =
+      document.getElementById("downloadBtn");
+
+    const open =
+      document.getElementById("openBtn");
 
 
-    player.src =
-      videoUrl;
+    /*
+      VIDEO PREVIEW
+    */
 
+    player.src = videoUrl;
 
     player.load();
 
 
-    /* -----------------------------------------------
-       DIRECT DOWNLOAD URL
+    /*
+      OPEN BUTTON
+    */
 
-       This goes to our server instead
-       of TikTok CDN.
-
-       Server sends:
-       Content-Disposition: attachment
-    ------------------------------------------------ */
-
-    const downloadUrl =
-      "/api/tiktok/download?url=" +
-      encodeURIComponent(url);
+    open.href = videoUrl;
 
 
-    downloadBtn.href =
-      downloadUrl;
+    /*
+      DOWNLOAD BUTTON
+    */
+
+    download.href = videoUrl;
+
+    download.setAttribute(
+      "download",
+      "VideoFlow-TikTok.mp4"
+    );
 
 
-    /* -----------------------------------------------
-       Normal open button
-    ------------------------------------------------ */
+    /*
+      Direct download attempt.
+      Agar browser/CDN download attribute
+      allow kare to file directly download hogi.
+    */
 
-    openBtn.href =
-      videoUrl;
+    download.onclick = async function(e){
 
-
-    /* -----------------------------------------------
-       Show result
-    ------------------------------------------------ */
-
-    result.style.display =
-      "block";
+      e.preventDefault();
 
 
-    /* Scroll result into view */
+      try{
 
-    setTimeout(() => {
+        const downloadResponse =
+          await fetch(videoUrl);
+
+
+        if(!downloadResponse.ok){
+
+          throw new Error("Download failed");
+
+        }
+
+
+        const blob =
+          await downloadResponse.blob();
+
+
+        const blobUrl =
+          URL.createObjectURL(blob);
+
+
+        const temp =
+          document.createElement("a");
+
+
+        temp.href = blobUrl;
+
+        temp.download =
+          "VideoFlow-TikTok.mp4";
+
+        document.body.appendChild(temp);
+
+        temp.click();
+
+        temp.remove();
+
+
+        setTimeout(function(){
+
+          URL.revokeObjectURL(blobUrl);
+
+        },1000);
+
+
+      }catch(error){
+
+        /*
+          Agar remote server CORS allow na kare,
+          video URL browser mein open ho jayega.
+        */
+
+        window.open(
+          videoUrl,
+          "_blank"
+        );
+
+      }
+
+    };
+
+
+    result.style.display = "block";
+
+
+    /*
+      Result tak scroll
+    */
+
+    setTimeout(function(){
 
       result.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
+        behavior:"smooth",
+        block:"center"
       });
 
-    }, 100);
+    },100);
 
 
-  } catch (error) {
+  }catch(error){
 
     console.error(error);
 
-
     message.innerText =
       error.message ||
-      "Something went wrong.";
+      "Failed to fetch TikTok video.";
 
   }
 
 
-  button.disabled =
-    false;
-
+  button.disabled = false;
 
   button.innerText =
     "Get Video";
@@ -1396,63 +1199,53 @@ async function getTikTokVideo() {
 }
 
 
-/* =====================================================
+/* =========================
    COPY VIDEO LINK
-===================================================== */
+========================= */
 
-async function copyVideoLink() {
-
+async function copyVideoLink(){
 
   const link =
-    document.getElementById(
-      "openBtn"
-    ).href;
+    document.getElementById("openBtn").href;
 
 
-  if (!link || link === "#") {
+  if(!link || link === "#"){
 
-    alert(
-      "No video link available."
-    );
+    alert("Video link is not available.");
 
     return;
 
   }
 
 
-  try {
+  try{
 
-    await navigator.clipboard.writeText(
-      link
-    );
+    await navigator.clipboard.writeText(link);
 
-
-    const btn =
-      document.getElementById(
-        "copyBtn"
-      );
+    const button =
+      document.getElementById("copyBtn");
 
 
     const oldText =
-      btn.innerText;
+      button.innerText;
 
 
-    btn.innerText =
-      "✓ Link Copied";
+    button.innerText =
+      "✓ Copied!";
 
 
-    setTimeout(() => {
+    setTimeout(function(){
 
-      btn.innerText =
+      button.innerText =
         oldText;
 
-    }, 2000);
+    },1500);
 
 
-  } catch (error) {
+  }catch(error){
 
     alert(
-      "Could not copy link."
+      "Could not copy video link."
     );
 
   }
@@ -1460,170 +1253,212 @@ async function copyVideoLink() {
 }
 
 
-/* =====================================================
+/* =========================
    YOUTUBE THUMBNAIL
-===================================================== */
+========================= */
 
-async function getYouTubeThumbnail() {
-
+async function getYouTubeThumbnail(){
 
   const input =
-    document.getElementById(
-      "youtubeUrl"
-    );
+    document.getElementById("youtubeUrl");
 
+  const message =
+    document.getElementById("youtubeMessage");
 
   const result =
-    document.getElementById(
-      "youtubeResult"
-    );
-
-
-  const thumbnail =
-    document.getElementById(
-      "thumbnail"
-    );
-
-
-  const download =
-    document.getElementById(
-      "thumbnailDownload"
-    );
-
-
-  const open =
-    document.getElementById(
-      "thumbnailOpen"
-    );
-
+    document.getElementById("thumbnailResult");
 
   const url =
     input.value.trim();
 
 
-  if (!url) {
+  message.innerText = "";
 
-    alert(
-      "Please enter a YouTube URL."
-    );
+  result.style.display = "none";
+
+
+  if(!url){
+
+    message.innerText =
+      "Please paste a YouTube URL.";
 
     return;
 
   }
 
 
-  try {
+  let videoId = null;
 
 
-    const response =
-      await fetch(
-        "/api/thumbnail?url=" +
-        encodeURIComponent(url)
-      );
+  try{
+
+    const parsed =
+      new URL(url);
 
 
-    const data =
-      await response.json();
+    if(
+      parsed.hostname.includes(
+        "youtube.com"
+      )
+    ){
 
-
-    if (!response.ok) {
-
-      throw new Error(
-        data.error ||
-        "Failed to get thumbnail"
-      );
+      videoId =
+        parsed.searchParams.get("v");
 
     }
 
 
-    const imageUrl =
-      data.thumbnail;
+    if(
+      parsed.hostname.includes(
+        "youtu.be"
+      )
+    ){
+
+      videoId =
+        parsed.pathname
+          .substring(1)
+          .split("/")[0];
+
+    }
 
 
-    thumbnail.src =
-      imageUrl;
+  }catch(error){
 
+    message.innerText =
+      "Invalid YouTube URL.";
 
-    download.href =
-      imageUrl;
-
-
-    open.href =
-      imageUrl;
-
-
-    result.style.display =
-      "block";
-
-
-    setTimeout(() => {
-
-      result.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-      });
-
-    }, 100);
-
-
-  } catch (error) {
-
-    console.error(error);
-
-
-    alert(
-      error.message ||
-      "Failed to get thumbnail."
-    );
+    return;
 
   }
 
+
+  if(!videoId){
+
+    message.innerText =
+      "Could not find YouTube video ID.";
+
+    return;
+
+  }
+
+
+  const imageUrl =
+    "https://img.youtube.com/vi/" +
+    videoId +
+    "/maxresdefault.jpg";
+
+
+  const thumbnail =
+    document.getElementById("thumbnail");
+
+  const download =
+    document.getElementById("thumbnailDownload");
+
+  const open =
+    document.getElementById("thumbnailOpen");
+
+
+  thumbnail.src =
+    imageUrl;
+
+
+  open.href =
+    imageUrl;
+
+
+  download.href =
+    imageUrl;
+
+
+  download.setAttribute(
+    "download",
+    "VideoFlow-Thumbnail.jpg"
+  );
+
+
+  /*
+    Thumbnail direct download
+  */
+
+  download.onclick = async function(e){
+
+    e.preventDefault();
+
+
+    try{
+
+      const response =
+        await fetch(imageUrl);
+
+
+      if(!response.ok){
+
+        throw new Error();
+
+      }
+
+
+      const blob =
+        await response.blob();
+
+
+      const blobUrl =
+        URL.createObjectURL(blob);
+
+
+      const temp =
+        document.createElement("a");
+
+
+      temp.href =
+        blobUrl;
+
+      temp.download =
+        "VideoFlow-Thumbnail.jpg";
+
+
+      document.body.appendChild(temp);
+
+      temp.click();
+
+      temp.remove();
+
+
+      setTimeout(function(){
+
+        URL.revokeObjectURL(blobUrl);
+
+      },1000);
+
+
+    }catch(error){
+
+      window.open(
+        imageUrl,
+        "_blank"
+      );
+
+    }
+
+  };
+
+
+  result.style.display =
+    "block";
+
+
+  setTimeout(function(){
+
+    result.scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+
+  },100);
+
 }
-
-
-/* =====================================================
-   ENTER KEY
-===================================================== */
-
-document
-  .getElementById("tiktokUrl")
-  .addEventListener(
-    "keydown",
-    function(event) {
-
-      if (
-        event.key === "Enter"
-      ) {
-
-        getTikTokVideo();
-
-      }
-
-    }
-  );
-
-
-document
-  .getElementById("youtubeUrl")
-  .addEventListener(
-    "keydown",
-    function(event) {
-
-      if (
-        event.key === "Enter"
-      ) {
-
-        getYouTubeThumbnail();
-
-      }
-
-    }
-  );
-
 
 </script>
 
-
 </body>
-
 </html>
